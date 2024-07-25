@@ -4,7 +4,7 @@ const Product = require("../../models/Product");
 exports.getAmazonProducts = async (req, res) => {
   try {
     const client = new ApifyClient({
-      token: "apify_api_kfPYfUhehBmsVtg8mlOvNRgwWpvAqg1TvPE6",
+      token: "apify_api_TAOWd1TFgmF639wPIn4EubmXY4IR0U32jZOv",
     });
 
     const input = {

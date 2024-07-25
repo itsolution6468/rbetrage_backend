@@ -4,7 +4,7 @@ const Product = require("../../models/Product");
 exports.getEbayProducts = async (req, res) => {
   // Initialize the ApifyClient with API token
   const client = new ApifyClient({
-    token: "apify_api_WbTgFlpRwzCiZdGBiohnLT9QACebme1GLASY",
+    token: "apify_api_kFqcgPfieaadnJUo8JMLKzZoqC4Vlz3IEUAU",
   });
 
   // Prepare Actor input

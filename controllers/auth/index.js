@@ -1,17 +1,22 @@
-const User = require("../../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
+
+const User = require("../../models/User");
 require("dotenv").config();
 
 const generateCode = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
-exports.signUp = async (req, res) => {
-  const { name, email, password } = req.body;
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+};
 
-  if (!email || !password) {
+exports.signUp = async (req, res) => {
+  const { name } = req.body;
+  const { user_id, email } = req.user;
+
+  if (!email) {
     return res
       .status(400)
       .json({ message: "Email and password are required." });
@@ -20,57 +25,55 @@ exports.signUp = async (req, res) => {
   const user = new User({
     name: name,
     email: email,
-    password: password,
+    googleId: user_id
   });
 
   await user.save();
 
-  const token = jwt.sign(
-    {
-      id: user._id,
-      email: user.email,
-    },
-    "RANDOM-TOKEN",
-    { expiresIn: "24h" }
-  );
+  const token = generateToken(user);
 
   res.status(200).json({ token: token });
 };
 
 exports.signIn = async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ message: "Email and password are required." });
-  }
+  const { user_id, email } = req.user;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email, googleId: user_id });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const token = generateToken(user);
 
-    if (isMatch) {
-      const token = jwt.sign(
-        {
-          id: user._id,
-          email: user.email,
-        },
-        "RANDOM-TOKEN",
-        { expiresIn: "24h" }
-      );
-
-      res.status(200).json({ token: token });
-    } else {
-      res.status(401).json({ message: "Invalid email or password" });
-    }
+    res.status(200).json({ token: token });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+exports.googleLogin = async (req, res) => {
+  const { user_id, picture, name, email } = req.user;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    const newUser = new User({
+      name: name,
+      email: email,
+      googleId: user_id,
+      avatar: picture
+    });
+
+    await newUser.save();
+
+    const token = generateToken(newUser);
+
+    res.status(200).json({ token: token });
+  } else {
+    const token = generateToken(user);
+
+    res.status(200).json({ token: token });
   }
 };
 
@@ -150,5 +153,26 @@ exports.resetPassword = async (req, res) => {
     res.status(200).send("Password has been reset.");
   } catch (err) {
     res.status(500).send(err.message);
+  }
+};
+
+exports.getUser = async (req, res) => {
+  try {
+    const id = req.query.id;
+
+    if (!id) {
+      return res.status(400).send("User ID is required");
+    }
+
+    const user = await User.findOne({ _id: id });
+
+    if (user) {
+      return res.status(200).send({ user: user });
+    } else {
+      return res.status(404).send("User not found");
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal Server Error");
   }
 };

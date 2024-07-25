@@ -5,7 +5,7 @@ exports.getEtsyProducts = async (req, res) => {
   try {
     // Initialize the ApifyClient with API token
     const client = new ApifyClient({
-      token: "apify_api_kfPYfUhehBmsVtg8mlOvNRgwWpvAqg1TvPE6",
+      token: "apify_api_kFqcgPfieaadnJUo8JMLKzZoqC4Vlz3IEUAU",
     });
 
     // Prepare Actor input
