@@ -39,6 +39,15 @@ const normalizeProduct = (product) => {
         features: "",
         marketplace: "Walmart",
       };
+    case "Alibaba":
+      return {
+        id: product.id,
+        title: product.title,
+        category: product.category,
+        price: product.price,
+        features: "",
+        marketplace: "Alibaba",
+      };
     default:
       return null;
   }
@@ -119,4 +128,13 @@ exports.getProducts = (req, res) => {
 exports.getSortedProducts = (req, res) => {
   const productIds = req.query.productIds;
   const sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+};
+
+exports.getWinningProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ "other.bestsellerRanks.rank": 1 });
+    res.status(200).send(products);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 };
