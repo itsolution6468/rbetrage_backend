@@ -16,13 +16,14 @@ app.use(connectLivereload());
 app.use(cors());
 
 mongoose
-  .connect("mongodb://localhost/my_database", {
-    // .connect(
-    //   "mongodb+srv://cyberstar:Fighting@cluster0.ox1nvmy.mongodb.net/rbetrage",
-    //   {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  // .connect("mongodb://localhost/my_database", {
+  .connect(
+    "mongodb+srv://cyberstar:Fighting@cluster0.ox1nvmy.mongodb.net/rbetrage",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
