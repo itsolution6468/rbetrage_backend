@@ -126,7 +126,7 @@ exports.getProducts = (req, res) => {
 };
 
 exports.getSortedProducts = async (req, res) => {
-  const product = req.params.search;
+  const product = req.query.search;
   const sortBy = req.query.sortBy ? req.query.sortBy : "_id";
   try {
     const products = await Product.find({
