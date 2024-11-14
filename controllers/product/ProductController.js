@@ -125,9 +125,17 @@ exports.getProducts = (req, res) => {
     });
 };
 
-exports.getSortedProducts = (req, res) => {
-  const productIds = req.query.productIds;
+exports.getSortedProducts = async (req, res) => {
+  const product = req.query.product;
   const sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+  try {
+    const products = await Product.find({
+      title: { $regex: new RegExp(product, "i") },
+    });
+    res.status(200).send(products);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 };
 
 exports.getWinningProducts = async (req, res) => {
