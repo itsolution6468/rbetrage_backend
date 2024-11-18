@@ -128,11 +128,11 @@ exports.getProducts = (req, res) => {
 exports.getSortedProducts = async (req, res) => {
   const product = req.query.search;
   const rate = req.query?.rating || 0;
-  const marketPlaces = req.query.marketPlaces?.split(",") || [];
+  const marketPlaces =
+    (req.query.marketPlaces && req.query.marketPlaces?.split(",")) || [];
   const minPrice = req.query?.minPrice || "";
   const maxPrice = req.query?.maxPrice || "";
 
-  // const sortBy = req.query.sortBy ? req.query.sortBy : "_id";
   try {
     const query = marketPlaces.length
       ? {
