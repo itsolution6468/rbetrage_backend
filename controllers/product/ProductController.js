@@ -127,11 +127,30 @@ exports.getProducts = (req, res) => {
 
 exports.getSortedProducts = async (req, res) => {
   const product = req.query.search;
-  const sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+  const rate = req.query?.rating || 0;
+  const marketPlaces = req.query.marketPlaces?.split(",") || [];
+  const minPrice = req.query?.minPrice || "";
+  const maxPrice = req.query?.maxPrice || "";
+
+  // const sortBy = req.query.sortBy ? req.query.sortBy : "_id";
   try {
-    const products = await Product.find({
-      title: { $regex: new RegExp(product, "i") },
-    });
+    const query = marketPlaces.length
+      ? {
+          marketPlace: { $in: marketPlaces },
+          title: { $regex: new RegExp(product, "i") },
+          $or: [
+            { "other.stars": { $gte: Number(rate) } },
+            { "other.averageRating": { $gte: Number(rate) } },
+          ],
+        }
+      : {
+          title: { $regex: new RegExp(product, "i") },
+          $or: [
+            { "other.stars": { $gte: Number(rate) } },
+            { "other.averageRating": { $gte: Number(rate) } },
+          ],
+        };
+    const products = await Product.find(query);
     res.status(200).send(products);
   } catch (error) {
     res.status(500).send(error.message);
