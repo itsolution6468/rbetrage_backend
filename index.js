@@ -4,6 +4,7 @@ const livereload = require("livereload");
 const connectLivereload = require("connect-livereload");
 const mongoose = require("mongoose");
 const cors = require("cors");
+var cron = require("node-cron");
 
 const port = 8000;
 
@@ -28,8 +29,11 @@ mongoose
   .catch((err) => console.log(err));
 
 const rootRouter = require("./routes");
+const { getScrappingProducts } = require("./controllers/product/scrappingController");
 
 app.use("/api", rootRouter);
+
+cron.schedule("0 */12 * * * *", getScrappingProducts);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
