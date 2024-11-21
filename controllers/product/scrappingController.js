@@ -17,6 +17,8 @@ exports.getScrappingProducts = async () => {
     // Loop through the products and save them to MongoDB
     const products = response.data;
 
+    await Product.deleteMany({ marketPlace: "Alibaba" });
+
     for (const product of products) {
       const { name, current_price, link } = product;
 
