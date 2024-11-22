@@ -24,7 +24,7 @@ exports.getScrappingProducts = async () => {
 
       // Insert or update the product in the MongoDB collection
       await Product.updateOne(
-        { imageUrl: link }, // Use the 'link' field as a unique identifier
+        { url: link }, // Use the 'link' field as a unique identifier
         {
           $set: {
             marketPlace: "Alibaba",
