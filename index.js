@@ -39,9 +39,9 @@ const {
 app.use("/api", rootRouter);
 
 cron.schedule("0 */12 * * * *", getScrappingProducts);
-cron.schedule("0 */12 * * * *", getStreetProducts);
-cron.schedule("0 */12 * * * *", getJumboProducts);
-cron.schedule("0 */12 * * * *", getSupermarketProducts);
+// cron.schedule("0 */12 * * * *", getStreetProducts);
+// cron.schedule("0 */12 * * * *", getJumboProducts);
+// cron.schedule("0 */12 * * * *", getSupermarketProducts);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
