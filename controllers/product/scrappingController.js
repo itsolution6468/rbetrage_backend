@@ -66,7 +66,7 @@ exports.getStreetProducts = async () => {
 
       // Insert or update the product in the MongoDB collection
       await Product.updateOne(
-        { imageUrl: link }, // Use the 'link' field as a unique identifier
+        { url: link }, // Use the 'link' field as a unique identifier
         {
           $set: {
             marketPlace: "6thStreet",
@@ -108,7 +108,7 @@ exports.getJumboProducts = async () => {
 
       // Insert or update the product in the MongoDB collection
       await Product.updateOne(
-        { imageUrl: link }, // Use the 'link' field as a unique identifier
+        { url: link }, // Use the 'link' field as a unique identifier
         {
           $set: {
             marketPlace: "Jumbo",
@@ -150,7 +150,7 @@ exports.getSupermarketProducts = async () => {
 
       // Insert or update the product in the MongoDB collection
       await Product.updateOne(
-        { imageUrl: link }, // Use the 'link' field as a unique identifier
+        { url: link }, // Use the 'link' field as a unique identifier
         {
           $set: {
             marketPlace: "Supermarket",
