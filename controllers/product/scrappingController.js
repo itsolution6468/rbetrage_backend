@@ -1,10 +1,12 @@
 const Product = require("../../models/Product");
 const axios = require("axios");
 
-exports.getScrappingProducts = async () => {
+exports.getScrappingProducts = async (req, res) => {
   try {
     // Fetch data from the FastAPI endpoint
     const response = await axios.get("http://127.0.0.1:5000/scrape"); // Update with your actual FastAPI URL
+
+    console.log(response.data);
 
     if (!response.data || response.data.message) {
       console.log(
@@ -17,17 +19,18 @@ exports.getScrappingProducts = async () => {
     // Loop through the products and save them to MongoDB
     const products = response.data;
 
-    await Product.deleteMany({ marketPlace: "Alibaba" });
+    // await Product.deleteMany({ marketPlace: "Alibaba" });
 
     for (const product of products) {
-      const { name, current_price, link } = product;
+      const { name, current_price, link, image } = product;
 
       // Insert or update the product in the MongoDB collection
       await Product.updateOne(
-        { url: link }, // Use the 'link' field as a unique identifier
+        { imageUrl: image }, // Use the 'link' field as a unique identifier
         {
           $set: {
             marketPlace: "Alibaba",
+            url: link,
             title: name,
             price: current_price,
             updatedAt: new Date(),
@@ -36,7 +39,6 @@ exports.getScrappingProducts = async () => {
         { upsert: true } // Insert if not found
       );
     }
-
     console.log("Data successfully saved to MongoDB!");
   } catch (error) {
     console.error("Error fetching or saving data:", error.message);
