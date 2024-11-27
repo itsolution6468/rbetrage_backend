@@ -19,7 +19,7 @@ exports.getScrappingProducts = async (req, res) => {
     // Loop through the products and save them to MongoDB
     const products = response.data;
 
-    // await Product.deleteMany({ marketPlace: "Alibaba" });
+    await Product.deleteMany({ marketPlace: "Alibaba" });
 
     for (const product of products) {
       const { name, current_price, link, image } = product;
@@ -45,10 +45,12 @@ exports.getScrappingProducts = async (req, res) => {
   }
 };
 
-exports.getStreetProducts = async () => {
+exports.getStreetProducts = async (req, res) => {
   try {
     // Fetch data from the FastAPI endpoint
     const response = await axios.get("http://127.0.0.1:5001/scrape"); // Update with your actual FastAPI URL
+
+    console.log(response);
 
     if (!response.data || response.data.message) {
       console.log(
@@ -61,17 +63,18 @@ exports.getStreetProducts = async () => {
     // Loop through the products and save them to MongoDB
     const products = response.data;
 
-    await Product.deleteMany({ marketPlace: "6thStreet" });
+    // await Product.deleteMany({ marketPlace: "6thStreet" });
 
     for (const product of products) {
-      const { name, current_price, link } = product;
+      const { name, current_price, link, image } = product;
 
       // Insert or update the product in the MongoDB collection
       await Product.updateOne(
-        { url: link }, // Use the 'link' field as a unique identifier
+        { imageUrl: image }, // Use the 'link' field as a unique identifier
         {
           $set: {
             marketPlace: "6thStreet",
+            url: link,
             title: name,
             price: current_price,
             updatedAt: new Date(),
@@ -106,15 +109,16 @@ exports.getJumboProducts = async () => {
     await Product.deleteMany({ marketPlace: "Jumbo" });
 
     for (const product of products) {
-      const { name, current_price, link } = product;
+      const { name, current_price, link, image } = product;
 
       // Insert or update the product in the MongoDB collection
       await Product.updateOne(
-        { url: link }, // Use the 'link' field as a unique identifier
+        { imageUrl: image }, // Use the 'link' field as a unique identifier
         {
           $set: {
             marketPlace: "Jumbo",
             title: name,
+            url: link,
             price: current_price,
             updatedAt: new Date(),
           },
@@ -148,14 +152,15 @@ exports.getSupermarketProducts = async () => {
     await Product.deleteMany({ marketPlace: "Supermarket" });
 
     for (const product of products) {
-      const { name, current_price, link } = product;
+      const { name, current_price, link, image } = product;
 
       // Insert or update the product in the MongoDB collection
       await Product.updateOne(
-        { url: link }, // Use the 'link' field as a unique identifier
+        { imageUrl: image }, // Use the 'link' field as a unique identifier
         {
           $set: {
             marketPlace: "Supermarket",
+            url: image,
             title: name,
             price: current_price,
             updatedAt: new Date(),

@@ -19,7 +19,7 @@ app.use(cors());
 mongoose
   // .connect("mongodb://localhost/my_database", {
   .connect(
-    "mongodb+srv://cyberstar:Fighting@cluster0.ox1nvmy.mongodb.net/rbetrage",
+    "mongodb+srv://cyberstar:Fighting@cluster0.ox1nvmy.mongodb.net/rbetrage?retryWrites=true&w=majority",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
