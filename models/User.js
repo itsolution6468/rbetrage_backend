@@ -12,11 +12,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    password: {
+    uid: {
       type: String,
     },
     googleId: {
-      type: String
+      type: String,
     },
     avatar: {
       type: String,

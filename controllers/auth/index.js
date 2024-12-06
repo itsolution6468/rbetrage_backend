@@ -9,12 +9,13 @@ const generateCode = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
 const generateToken = (user) => {
-  return jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+  return jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+    expiresIn: "1h",
+  });
 };
 
 exports.signUp = async (req, res) => {
-  const { name } = req.body;
-  const { user_id, email } = req.user;
+  const { name, email, uid } = req.body;
 
   if (!email) {
     return res
@@ -25,7 +26,7 @@ exports.signUp = async (req, res) => {
   const user = new User({
     name: name,
     email: email,
-    googleId: user_id
+    uid: uid,
   });
 
   await user.save();
@@ -36,10 +37,10 @@ exports.signUp = async (req, res) => {
 };
 
 exports.signIn = async (req, res) => {
-  const { user_id, email } = req.user;
+  const { email } = req.user;
 
   try {
-    const user = await User.findOne({ email: email, googleId: user_id });
+    const user = await User.findOne({ email: email });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
@@ -62,7 +63,7 @@ exports.googleLogin = async (req, res) => {
       name: name,
       email: email,
       googleId: user_id,
-      avatar: picture
+      avatar: picture,
     });
 
     await newUser.save();
